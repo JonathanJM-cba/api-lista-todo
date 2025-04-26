@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 require("dotenv").config();
 const cors = require("cors");
+const { dbConnection } = require("./config/postgres");
 
 const port = process.env.PORT || 3000;
 
@@ -16,3 +17,5 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Servidor corriendo en localhost:${port}`);
 });
+
+dbConnection();
