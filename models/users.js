@@ -10,7 +10,7 @@ const Users = sequelize.define(
   {
     name: {
       type: DataTypes.STRING(255),
-      allowNull: true,
+      allowNull: false,
     },
     email: {
       type: DataTypes.STRING(255),
@@ -20,6 +20,11 @@ const Users = sequelize.define(
     password: {
       type: DataTypes.STRING(255),
       allowNull: false,
+      validate: {
+        len: {
+          args: [5, 255],
+        },
+      },
     },
   },
   {
