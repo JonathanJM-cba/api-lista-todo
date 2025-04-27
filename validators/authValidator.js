@@ -36,4 +36,30 @@ const validatorAuthRegister = [
   },
 ];
 
-module.exports = { validatorAuthRegister };
+//Validaciones para el login del usuario
+const validatorAuthLogin = [
+  check("email")
+    .exists()
+    .withMessage("El campo email debe existir")
+    .notEmpty()
+    .withMessage("El campo email no debe estar vacío")
+    .isEmail()
+    .withMessage("El campo email debe estar en formato email")
+    .normalizeEmail()
+    .isLength({ max: 255 })
+    .withMessage("El campo email no debe superar los 255 caracteres"),
+  check("password")
+    .exists()
+    .withMessage("El campo password debe existir")
+    .notEmpty()
+    .withMessage("El campo password no debe estar vacío")
+    .isString()
+    .withMessage("El campo password debe ser un string")
+    .isLength({ min: 5, max: 255 })
+    .withMessage("El campo password debe contener entre 5 y 255 caracteres"),
+  (req, res, next) => {
+    return validateResult(req, res, next);
+  },
+];
+
+module.exports = { validatorAuthRegister, validatorAuthLogin };
