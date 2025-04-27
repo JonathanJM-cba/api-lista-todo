@@ -4,7 +4,6 @@
 
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/postgres");
-const Tasks = require("./tasks");
 
 const Users = sequelize.define(
   "Users",
@@ -28,10 +27,5 @@ const Users = sequelize.define(
     timestamps: true,
   }
 );
-
-Users.hasMany(Tasks, {
-  as: "tasks",
-  foreignKey: "taskId",
-});
 
 module.exports = Users;

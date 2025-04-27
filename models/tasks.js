@@ -4,13 +4,12 @@
 
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/postgres");
-const Users = require("./users");
 
 const Tasks = sequelize.define(
   "Tasks",
   {
     id: {
-      type: DataTypes.INTEGER(11),
+      type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
@@ -22,15 +21,15 @@ const Tasks = sequelize.define(
       type: DataTypes.STRING(255),
       allowNull: true,
     },
+    userEmail: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
   },
   {
     tableName: "tasks",
     timestamps: true,
   }
 );
-
-Tasks.belongsTo(Users, {
-  foreignKey: "taskId",
-});
 
 module.exports = Tasks;
