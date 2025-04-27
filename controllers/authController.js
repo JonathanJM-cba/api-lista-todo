@@ -1,6 +1,6 @@
 const { usersModel } = require("../models");
 const handleHttpError = require("../utils/handleError");
-const { encrypt } = require("../utils/handlePassword");
+const { encrypt, comparePassword } = require("../utils/handlePassword");
 const { generateToken } = require("../utils/handleToken");
 
 const userRegister = async (req, res) => {
@@ -41,4 +41,33 @@ const userRegister = async (req, res) => {
   }
 };
 
-module.exports = { userRegister };
+const userLogin = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    //Se verifica la existencia del usuario con el email recibido
+    const user = await usersModel.findOne({
+      where: { email: email },
+    });
+
+    if (!user) {
+      return handleHttpError(res, "ERROR_USER_NOT_FOUND", 404);
+    }
+
+    //Si existe se compara la contraseña del usuario con el hash
+    const checkPassword = await comparePassword(password, user.password);
+
+    if (!checkPassword) {
+      return handleHttpError(res, "ERROR_INVALID_PASSWORD", 400);
+    }
+
+    //Una vez válido el usuario se genera el token de autenticación
+    const token = await generateToken(user);
+
+    res.status(200).json({ token: token });
+  } catch (error) {
+    console.log("Error al loguerse: ", error);
+    handleHttpError(res, "ERROR_USER_LOGIN", 500);
+  }
+};
+
+module.exports = { userRegister, userLogin };

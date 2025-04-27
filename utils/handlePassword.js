@@ -10,4 +10,14 @@ const encrypt = async (plainPassword) => {
   return await bcrypt.hash(plainPassword, saltRounds);
 };
 
-module.exports = { encrypt };
+/**
+ * Función para comparar contraseñas planas y encriptadas
+ * @param {String} plainPassword - Pasar la contraseña en texto plano
+ * @param {String} hashPassword - Pasar la contraseña encriptada
+ * @returns {Promise} - Retorna una promesa
+ */
+const comparePassword = async (plainPassword, hashPassword) => {
+  return await bcrypt.compare(plainPassword, hashPassword);
+};
+
+module.exports = { encrypt, comparePassword };
