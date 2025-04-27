@@ -1,6 +1,7 @@
 const { usersModel } = require("../models");
 const handleHttpError = require("../utils/handleError");
 const { encrypt } = require("../utils/handlePassword");
+const { generateToken } = require("../utils/handleToken");
 
 const userRegister = async (req, res) => {
   const { name, email, password } = req.body;
@@ -30,9 +31,10 @@ const userRegister = async (req, res) => {
 
     await usersModel.create(newUser);
 
-    res
-      .status(201)
-      .json({ message: "Usuario registrado con éxito", data: newUser });
+    //Se genera token de autenticación para devolver en la respuesta
+    const token = await generateToken(newUser);
+
+    res.status(201).json({ token: token });
   } catch (error) {
     console.log("Error durante el registro del usuario: ", error);
     handleHttpError(res, "ERROR_USER_REGISTER", 500);
