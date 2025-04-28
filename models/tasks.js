@@ -19,7 +19,7 @@ const Tasks = sequelize.define(
     },
     description: {
       type: DataTypes.STRING(255),
-      allowNull: true,
+      allowNull: false,
     },
     userEmail: {
       type: DataTypes.STRING(255),
