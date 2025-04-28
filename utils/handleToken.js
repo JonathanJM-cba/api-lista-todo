@@ -26,4 +26,17 @@ const generateToken = async (user) => {
   }
 };
 
-module.exports = { generateToken };
+/**
+ * Función para verificar el token de autenticación del usuario
+ * @param {String} token - Pasar el token a verificar
+ * @returns {Promise} - Retorna una promise
+ */
+const verifyToken = async (token) => {
+  try {
+    return await jwt.verify(token, llaveMaestra);
+  } catch (error) {
+    console.log("Error al verificar el token del usuario: ", error);
+  }
+};
+
+module.exports = { generateToken, verifyToken };
