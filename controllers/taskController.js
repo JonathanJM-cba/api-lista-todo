@@ -131,10 +131,35 @@ const getPaginationAllTasks = async (req, res) => {
   }
 };
 
+const getTaskById = async (req, res) => {
+  const { id } = req.params;
+  const { email } = req.user;
+  try {
+    const task = await tasksModel.findByPk(id);
+
+    if (!task) return handleHttpError(res, "ERROR_TASK_NOT_FOUND", 404);
+
+    if (task.userEmail !== email)
+      return handleHttpError(res, "ERROR_NO_PERMISSIONS_GET_TASK", 403);
+
+    const taskData = {
+      id: task.id,
+      title: task.title,
+      description: task.description,
+    };
+
+    res.status(200).json(taskData);
+  } catch (error) {
+    console.log("Error al obtener tarea del usuario: ", error);
+    handleHttpError(res, "ERROR_GET_TASK_BY_ID", 500);
+  }
+};
+
 module.exports = {
   createTask,
   updateTask,
   deleteTask,
   getAllTasks,
   getPaginationAllTasks,
+  getTaskById,
 };
