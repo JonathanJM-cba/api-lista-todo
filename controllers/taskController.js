@@ -98,4 +98,43 @@ const getAllTasks = async (req, res) => {
   }
 };
 
-module.exports = { createTask, updateTask, deleteTask, getAllTasks };
+const getPaginationAllTasks = async (req, res) => {
+  const { email } = req.user;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 5;
+
+  if (isNaN(page) || page < 1) page = 1;
+  if (isNaN(limit) || limit < 1 || limit > 10) limit = 5;
+  try {
+    const offset = (page - 1) * limit;
+
+    const { count, rows: tasks } = await tasksModel.findAndCountAll({
+      where: { userEmail: email },
+      limit,
+      offset,
+    });
+
+    const total = Math.ceil(count / limit);
+
+    //Mapeo de tareas
+    const dataTask = tasks.map((task) => ({
+      id: task.id,
+      title: task.title,
+      description: task.description,
+    }));
+
+    res.status(200).json({ data: dataTask, page, limit, total });
+  } catch (error) {
+    console.log(
+      "Error la intentar obtener todas las tareas pendientes del usuario"
+    );
+  }
+};
+
+module.exports = {
+  createTask,
+  updateTask,
+  deleteTask,
+  getAllTasks,
+  getPaginationAllTasks,
+};
