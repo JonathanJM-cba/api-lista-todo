@@ -78,4 +78,24 @@ const deleteTask = async (req, res) => {
   }
 };
 
-module.exports = { createTask, updateTask, deleteTask };
+const getAllTasks = async (req, res) => {
+  const { email } = req.user;
+  try {
+    const tasks = await tasksModel.findAll({ where: { userEmail: email } });
+    //Se realiza un mapeo de las tareas
+    const dataTask = tasks.map((task) => ({
+      id: task.id,
+      title: task.title,
+      description: task.description,
+    }));
+    res.status(200).json({ data: dataTask });
+  } catch (error) {
+    console.log(
+      "Error al intentar devolver todas las tereas pendientes del usuario: ",
+      error
+    );
+    handleHttpError(res, "ERROR_GET_ALL_TASKS", 500);
+  }
+};
+
+module.exports = { createTask, updateTask, deleteTask, getAllTasks };
