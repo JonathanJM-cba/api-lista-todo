@@ -55,4 +55,27 @@ const updateTask = async (req, res) => {
   }
 };
 
-module.exports = { createTask, updateTask };
+const deleteTask = async (req, res) => {
+  const { id } = req.params;
+  const { email } = req.user;
+  try {
+    //Se verifica si existe la terea a eliminar
+    const task = await tasksModel.findByPk(id);
+
+    if (!task) return handleHttpError(res, "ERROR_TASK_NOT_FOUND", 404);
+
+    //Se verifica si la tarea a eliminar pertenece al usuario que lo creo
+    if (task.userEmail !== email)
+      return handleHttpError(res, "ERROR_NO_PERMISSIONS_DELETE_TASK", 403);
+
+    //Caso contrario se elimina la terea
+    await task.destroy();
+
+    res.status(204).json({ message: "Tarea eliminada existosamente." });
+  } catch (error) {
+    console.log("Error al intentar eliminar la tarea: ", error);
+    handleHttpError(res, "ERROR_DELETE_TASK", 500);
+  }
+};
+
+module.exports = { createTask, updateTask, deleteTask };
