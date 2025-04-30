@@ -6,6 +6,7 @@ const {
   getAllTasks,
   getPaginationAllTasks,
   getTaskById,
+  getSearchTasks,
 } = require("../controllers/taskController");
 const checkAuth = require("../middleware/checkAuth");
 const { validatorCreateTask } = require("../validators/taskValidator");
@@ -20,6 +21,8 @@ router.delete("/todos/:id", checkAuth, deleteTask);
 router.get("/todos", checkAuth, getAllTasks);
 
 router.get("/todos/paginado", checkAuth, getPaginationAllTasks);
+
+router.get("/todos/buscar", checkAuth, getSearchTasks);
 
 router.get("/todos/:id", checkAuth, getTaskById);
 

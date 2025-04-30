@@ -155,6 +155,25 @@ const getTaskById = async (req, res) => {
   }
 };
 
+const getSearchTasks = async (req, res) => {
+  const { title, description } = req.query;
+  const { email } = req.user;
+
+  try {
+    const tasks = await tasksModel.searchTask({ title, description }, email);
+
+    const dataTasks = tasks.map((task) => ({
+      id: task.id,
+      title: task.title,
+      description: task.description,
+    }));
+    res.status(200).json(dataTasks);
+  } catch (error) {
+    console.log("Error al buscar las tareas pendientes del usuario: ", error);
+    handleHttpError(res, "ERROR_GET_SEARCH_TASKS", 500);
+  }
+};
+
 module.exports = {
   createTask,
   updateTask,
@@ -162,4 +181,5 @@ module.exports = {
   getAllTasks,
   getPaginationAllTasks,
   getTaskById,
+  getSearchTasks,
 };

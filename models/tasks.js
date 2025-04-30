@@ -2,7 +2,7 @@
  * Modelo que representa las tareas
  */
 
-const { DataTypes } = require("sequelize");
+const { DataTypes, Op } = require("sequelize");
 const { sequelize } = require("../config/postgres");
 
 const Tasks = sequelize.define(
@@ -31,5 +31,31 @@ const Tasks = sequelize.define(
     timestamps: true,
   }
 );
+
+/**
+ * Función para buscar las tareas según titulo y descripción
+ * @param {Object} searchParams - Pasar los párametros de búsqueda
+ * @param {String} userEmail - Pasar el email del usuario para obtener sus tareas
+ * @returns {Array<Tasks>} - Retoran las tareas que cumplen con las condiciones que de búsqueda
+ */
+Tasks.searchTask = function (searchParams = {}, userEmail) {
+  const { title, description } = searchParams;
+
+  const whereConditions = {
+    userEmail: userEmail,
+  };
+
+  if (title) {
+    whereConditions.title = { [Op.like]: `%${title}%` };
+  }
+
+  if (description) {
+    whereConditions.description = { [Op.like]: `%${description}%` };
+  }
+
+  return this.findAll({
+    where: whereConditions,
+  });
+};
 
 module.exports = Tasks;
